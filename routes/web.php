@@ -11,6 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'GridController@getIndex')->name('grid.show');;
+Route::get('/grid/data', 'GridController@getData')->name('grid.show');;
+Route::post('/grid/create', 'GridController@postData')->name('grid.create');;
+Route::post('/grid/edit', 'GridController@postUpdateData')->name('grid.edit');;
+Route::post('/grid/delete/{id}', 'GridController@deleteData')->name('grid.delete');;
