@@ -75,6 +75,7 @@
                             },
 
                         ],
+                        deleteConfirm: "Do you really want to delete client?",
                         sortname: 'id',
                         sortorder: 'desc',
                         loadonce: true,
@@ -82,7 +83,8 @@
                         width: 780,
                         height: 200,
                         rowNum: 10,
-                        pager: "#jqGridPager"
+                        pager: "#jqGridPager",
+                        reloadGridOptions: { fromServer: true }
                     });
 
                     $('#jqGrid').navGrid('#jqGridPager',
@@ -92,25 +94,37 @@
                             add: true,
                             del: true,
                             search: false,
-                            refresh: false,
+                            refresh: true,
                             view: false,
                             position: "left",
-                            cloneToTop: false
+                            cloneToTop: false,
+                            closeAfterEdit:true,
+                            reloadAfterSubmit: true,
+                            reloadGridOptions: { fromServer: true }
+
                         },
                         // options for the Edit Dialog
                         {
                             editCaption: "The Edit Dialog",
+                            closeAfterEdit: true,
                             template: template,
                             errorTextFormat: function(data) {
                                 return 'Error: ' + data.responseText
+                            },
+                            onClose: function() {
+                                $("#jqGrid").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid', [{ current: true }]);
                             }
                         },
                         // options for the Add Dialog
-                        {
+                        {   closeAfterAdd: true,
                             template: template,
                             errorTextFormat: function(data) {
                                 return 'Error: ' + data.responseText
-                            }
+                            },
+                            onClose: function() {
+                                $("#jqGrid").setGridParam({ datatype: 'json', page: 1 }).trigger('reloadGrid', [{ current: true }]);
+                            }                            
+
                         },
                         // options for the Delete Dailog
                         {
@@ -120,56 +134,6 @@
                         });
                 });
             </script>
-
-
-
-            <script type="text/javascript">
-                   $(document).ready(function () {
-                       //
-                       // $("#jqGrid").jqGrid({
-                       //     url: '/grid/data',
-                       //     mtype: "GET",
-           				// styleUI : 'Bootstrap',
-                       //     datatype: "jsonp",
-                       //     colModel: [
-                       //         { label: 'id', name: 'id', key: true, width: 75 },
-                       //         { label: 'title', name: 'title', width: 150 },
-                       //         { label: 'description', name: 'description', width: 150 },
-                       //         { label: 'created_at', name: 'created_at', width: 150 },
-                       //     ],
-           				// viewrecords: true,
-                       //     height: 250,
-                       //     rowNum: 20,
-                       //     pager: "#jqGridPager"
-                       // });
-
-                       $('a.create').click(function(){
-                            $('#myModal').modal();
-                            $('#myModal form').attr('action','{{route('grid.create')}}')
-                       });
-
-                       $("#form").submit(function() {
-                           $.post(
-                              $(this).attr('action'),
-                              $(this).serializeArray(),
-                              function(data) {
-                               if(data) {
-                                   var items = [];
-                                   $.each( data, function( key, val ) {
-                                       items.push( "<li id='" + key + "'>" + val + "</li>" );
-                                   });
-
-                                   $( "<ul/>", {
-                                       "class": "my-new-list",
-                                       html: items.join( "" )
-                                   }).appendTo("#errors");
-                               }
-                           });
-                       });
-
-                   });
-
-              </script>
 
         </div>
     </body>
